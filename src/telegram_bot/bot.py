@@ -1,9 +1,7 @@
 import logging
 import io
-import cv2
 import numpy as np
 from PIL import Image
-import matplotlib.pyplot as plt
 
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
@@ -59,7 +57,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 def main() -> None:
     """Start the bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token("6289760635:AAEM4HzYVplQl654TGhBiXutBS6nS9hGkbs").build()
+    application = Application.builder().token("BOT").build()
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", start))
