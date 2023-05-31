@@ -7,6 +7,16 @@ from tqdm.auto import tqdm
 from src.models.model import get_detectron_model
 
 
+def get_mask(img: np.ndarray, model, detectron_selected_class: int = 0):
+    preds = model(img)["instances"]
+    if np.any(preds.pred_classes.cpu().numpy() == detectron_selected_class):
+        return np.any(
+            preds[preds.pred_classes == detectron_selected_class].pred_masks[:, :, :].cpu().numpy(), axis=0
+        )
+    else:
+        return np.zeros_like(img)
+
+
 def anonymize(
     img: np.ndarray,
     mask: np.ndarray = None,
