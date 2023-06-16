@@ -24,13 +24,13 @@ model = get_detectron_model("cpu", 0.25)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     await update.message.reply_text(
-        "Send me a picture! I will blur all people captured in this picture."
+        "Добрый день! \nЭто бот для демонстрации дипломной работы Масальского Н.В. Отправьте мне изображение и я анонимизирую всех людей захваченных на нем."
     )
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
-    await update.message.reply_text("Send me a picture! I will blur all people captured in this picture.")
+    await update.message.reply_text("Добрый день! \nЭто бот для демонстрации дипломной работы Масальского Н.В. Отправьте мне изображение и я анонимизирую всех людей захваченных на нем.")
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -47,11 +47,19 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         human_mask = get_mask(img, model)
         img_anon = anonymize(img, human_mask, "median", blur_kernel_size, True)
 
-        in_memory_file_out = io.BytesIO()
+        img_masked = anonymize(img, human_mask, "color_red", blur_kernel_size, True)
+
+        in_memory_file_out1 = io.BytesIO()
+        img_out = Image.fromarray(np.uint8(img_masked))
+        img_out.save(in_memory_file_out1, "JPEG")
+        in_memory_file_out1.seek(0)
+        await update.message.reply_photo(in_memory_file_out1)
+
+        in_memory_file_out2 = io.BytesIO()
         img_out = Image.fromarray(np.uint8(img_anon))
-        img_out.save(in_memory_file_out, "JPEG")
-        in_memory_file_out.seek(0)
-        await update.message.reply_photo(in_memory_file_out)
+        img_out.save(in_memory_file_out2, "JPEG")
+        in_memory_file_out2.seek(0)
+        await update.message.reply_photo(in_memory_file_out2)
 
 
 def main() -> None:

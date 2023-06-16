@@ -14,7 +14,7 @@ def get_mask(img: np.ndarray, model, detectron_selected_class: int = 0):
             preds[preds.pred_classes == detectron_selected_class].pred_masks[:, :, :].cpu().numpy(), axis=0
         )
     else:
-        return np.zeros_like(img)
+        return np.full((preds.pred_masks.shape[1], preds.pred_masks.shape[2]), False)
 
 
 def anonymize(
@@ -33,6 +33,9 @@ def anonymize(
         img_anon = cv2.medianBlur(img_anon, blur_kernel_size)
     elif blur_mode == "gaussian":
         img_anon = cv2.GaussianBlur(img_anon, (blur_kernel_size, blur_kernel_size), 0)
+    elif blur_mode == "color_red":
+        img_anon = np.zeros_like(img_anon)
+        img_anon[:, :, 0] = 255
     else:
         raise AttributeError("Wrong blur_mode value")
 
